@@ -36,6 +36,164 @@ button {
   color: white;
 }
 
+/* Barra de navegación fija (Inicio / Chat / About), visible en todas las vistas */
+.navbar {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  background: #16162a;
+  border-bottom: 1px solid #2a2a3d;
+  padding: 14px 16px;
+}
+
+.navbar .navLink {
+  display: inline;
+  background: none;
+  padding: 4px 2px;
+  margin-top: 0;
+  color: #aab;
+  font-weight: 500;
+}
+
+.navbar .navLink:hover {
+  background: none;
+  color: white;
+}
+
+.navbar .navLink.active {
+  color: white;
+  border-bottom: 2px solid #4f46e5;
+}
+
+/* Enlaces de navegación con aspecto de botón (usados fuera de la navbar) */
+.navLink {
+  display: inline-block;
+  padding: 10px 15px;
+  margin-top: 15px;
+  border-radius: 8px;
+  background: #4f46e5;
+  color: white;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.navLink:hover {
+  background: #4338ca;
+}
+
+/* Subtítulo corto debajo del h1 (Home) */
+.tagline {
+  color: #c7c7e0;
+  margin-bottom: 16px;
+}
+
+/* Tarjeta de información (Home y About) */
+.infoCard {
+  background: #232342;
+  border: 1px solid #3a3a5c;
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+}
+
+.infoCard h2 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #b7b3ff;
+}
+
+.infoCard p,
+.infoCard li {
+  color: #e6e6f0;
+  line-height: 1.5;
+}
+
+.infoCard ul {
+  list-style: disc;
+  padding-left: 20px;
+}
+
+/* Contenedor de Home: centra imagen, título y botón; el texto de la
+   tarjeta queda alineado a la izquierda para que se lea mejor */
+.homeView {
+  text-align: center;
+}
+
+.homeView .infoCard {
+  text-align: left;
+}
+
+/* Marco circular para la imagen del personaje (Home) */
+.heroImage {
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  background: #1a1a2e;
+  border: 3px solid #4f46e5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  overflow: hidden;
+}
+
+.heroImage img {
+  width: 85%;
+  height: 85%;
+  object-fit: contain;
+}
+
+/* CHAT */
+.chat-box {
+  height: 320px;
+  overflow-y: auto;
+  border: 1px solid #2a2a3d;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 10px;
+  background: #16162a;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.msg {
+  padding: 8px 12px;
+  border-radius: 10px;
+  max-width: 80%;
+  word-wrap: break-word;
+}
+
+.msg-user {
+  align-self: flex-end;
+  background: #4f46e5;
+  color: white;
+}
+
+.msg-bot {
+  align-self: flex-start;
+  background: #2a2a3d;
+  color: #e6e6f0;
+}
+
+.chat-input-row {
+  display: flex;
+  gap: 8px;
+}
+
+.chat-input-row input {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #2a2a3d;
+  background: #1a1a2e;
+  color: white;
+}
+
+.chat-input-row button {
+  margin-top: 0;
+}
+
 /* ===== TABLET ===== */
 @media (min-width: 768px) {
   h1 {

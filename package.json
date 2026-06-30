@@ -1,20 +1,22 @@
+
 {
   "name": "proyectom3_katherinevasquez",
   "version": "1.0.0",
-  "description": "",
+  "description": "Chat con Spider-Man usando Google Gemini AI y Vercel Serverless Functions",
   "main": "index.js",
+  "type": "module",
   "directories": {
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "vitest run"
   },
   "keywords": [],
-  "author": "",
+  "author": "Katherine Vasquez",
   "license": "ISC",
-  "type": "commonjs",
   "devDependencies": {
-    "vercel": "^54.18.2"
+    "vercel": "^54.18.2",
+    "vitest": "^4.1.9"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1"
