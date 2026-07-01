@@ -194,6 +194,14 @@ button {
   margin-top: 0;
 }
 
+/* Estado deshabilitado: se nota claramente que el chat está bloqueado
+   mientras se espera respuesta de Gemini, o durante el contador de 429 */
+.chat-input-row input:disabled,
+.chat-input-row button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 /* ===== TABLET ===== */
 @media (min-width: 768px) {
   h1 {

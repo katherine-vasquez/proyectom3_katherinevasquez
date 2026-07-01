@@ -1,4 +1,4 @@
-import { resolveRoute, sendChatMessage } from "./utils.js";
+import { resolveRoute, sendChatMessage, parseRetryDelaySeconds } from "./utils.js";
  
 const app = document.getElementById("app");
 const navLinks = document.querySelectorAll("#navbar .navLink");
@@ -12,10 +12,10 @@ function renderHome() {
       <div class="heroImage">
         <img src="./assets/spiderman.png" alt="Spider-Man" />
       </div>
-
+ 
       <h1>Spider-Man Chat 🕷️</h1>
       <p class="tagline">Tu amigable vecino Spider-Man, ahora en un chat.</p>
-
+ 
       <div class="infoCard">
         <h2>Sobre el personaje</h2>
         <p>
@@ -26,18 +26,17 @@ function renderHome() {
           responsabilidad.
         </p>
       </div>
-
+ 
       <a class="navLink" href="/chat">Comenzar a chatear</a>
     </div>
   `;
 }
  
 // -------------------- ABOUT --------------------
-// -------------------- ABOUT --------------------
 function renderAbout() {
   app.innerHTML = `
     <h1>About</h1>
-
+ 
     <div class="infoCard">
       <h2>El Personaje</h2>
       <p>
@@ -47,18 +46,17 @@ function renderAbout() {
         responsabilidad".
       </p>
     </div>
-
+ 
     <div class="infoCard">
       <h2>El Proyecto</h2>
       <p>
-        Esta aplicación nació como mi Proyecto Integrador del Módulo 3 de Full
-        Stack Development. La idea fue simple: tomar todo lo aprendido durante
-        el módulo (routing sin recargar la página, consumo de APIs de IA, y
-        protección de credenciales en el backend) y aplicarlo a algo
-        divertido — hablar con Spider-Man como si estuviera realmente ahí.
+        Spider-Man Chat es una Single Page Application desarrollada como
+        Proyecto Integrador del Módulo 3. Permite chatear con Spider-Man
+        usando Google Gemini AI, con routing implementado mediante History
+        API y un diseño mobile-first.
       </p>
     </div>
-
+ 
     <div class="infoCard">
       <h2>Tecnologías</h2>
       <ul>
@@ -68,11 +66,11 @@ function renderAbout() {
         <li>Vitest para testing</li>
       </ul>
     </div>
-
+ 
     <a class="navLink" href="/chat">Ir al chat</a>
   `;
 }
-
+ 
 // -------------------- CHAT --------------------
 function renderChat() {
   app.innerHTML = `
@@ -127,6 +125,7 @@ function renderMessages() {
 // -------------------- SEND MESSAGE --------------------
 async function sendMessage() {
   const input = document.getElementById("inputMessage");
+  const sendBtn = document.getElementById("sendBtn");
   const text = input.value.trim();
  
   if (!text) return;
@@ -139,6 +138,12 @@ async function sendMessage() {
   renderMessages();
   input.value = "";
  
+  // Bloqueamos input y botón mientras esperamos respuesta: evita que el
+  // usuario mande varios mensajes en menos de un segundo y dispare un
+  // 429 por exceso de solicitudes (sugerencia del profe en clase).
+  input.disabled = true;
+  sendBtn.disabled = true;
+ 
   messages.push({ role: "Spider-Man", text: "🕷️ escribiendo..." });
   renderMessages();
  
@@ -147,12 +152,67 @@ async function sendMessage() {
     messages.pop(); // quita "escribiendo..."
     messages.push({ role: "Spider-Man", text: reply });
     renderMessages();
+    unlockChatInput();
   } catch (error) {
     console.error("Error al hablar con Spider-Man:", error);
-    messages.pop();
-    messages.push({ role: "Spider-Man", text: "Error conectando con Spider-Man 😢" });
-    renderMessages();
+    messages.pop(); // quita "escribiendo..."
+ 
+    if (error.status === 429) {
+      // Caso específico: límite de peticiones excedido. Mostramos un
+      // contador visual y mantenemos el chat bloqueado hasta que termine.
+      const seconds = parseRetryDelaySeconds(error.retryDelay);
+      runRateLimitCountdown(seconds);
+    } else {
+      messages.push({ role: "Spider-Man", text: "Error conectando con Spider-Man 😢" });
+      renderMessages();
+      unlockChatInput();
+    }
   }
+}
+ 
+function unlockChatInput() {
+  const input = document.getElementById("inputMessage");
+  const sendBtn = document.getElementById("sendBtn");
+  if (!input || !sendBtn) return;
+  input.disabled = false;
+  sendBtn.disabled = false;
+  input.focus();
+}
+ 
+// Muestra "Estoy ocupado... espera Ns" y va bajando el contador cada
+// segundo. Al llegar a 0, desbloquea el chat para que se pueda escribir
+// de nuevo. (Estrategia explicada por el profe para manejar el 429.)
+function runRateLimitCountdown(seconds) {
+  let remaining = seconds;
+ 
+  const tick = () => {
+    if (messages.length && messages[messages.length - 1].isCountdown) {
+      messages.pop();
+    }
+ 
+    if (remaining <= 0) {
+      messages.push({
+        role: "Spider-Man",
+        text: "¡Ya volví! Dime, ¿en qué te ayudo? 🕸️",
+        isCountdown: true,
+      });
+      renderMessages();
+      unlockChatInput();
+      return;
+    }
+ 
+    messages.push({
+      role: "Spider-Man",
+      text: `Estoy esquivando muchas preguntas a la vez... dame ${remaining}s 🕸️`,
+      isCountdown: true,
+    });
+    renderMessages();
+ 
+    remaining -= 1;
+    setTimeout(tick, 1000);
+  };
+ 
+  tick();
 }
  
 // -------------------- NAV ACTIVA --------------------
