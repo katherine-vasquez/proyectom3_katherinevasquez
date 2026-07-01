@@ -37,6 +37,9 @@ resuelva ejercicios de programación).
 - History API (routing SPA sin recarga de página)
 
 ## Estructura del proyecto
+
+````← ESTA LÍNEA NUEVA (apertura)
+
 proyectom3_katherinevasquez/
 ├── api/
 │   └── functions.js       # Serverless Function: proxy seguro hacia Gemini
@@ -59,7 +62,7 @@ proyectom3_katherinevasquez/
 ├── vercel.json
 ├── vitest.config.js
 └── package.json
-
+```  
 > Nota sobre la estructura: `index.html`, `styles.css`, `app.js` y `utils.js` viven en
 > `public/` porque es la carpeta que Vercel publica al navegador. `src/chat.js` y
 > `src/models.js` quedan afuera porque solo los usa la Serverless Function — el
