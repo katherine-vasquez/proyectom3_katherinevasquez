@@ -87,32 +87,6 @@ button {
   margin-bottom: 16px;
 }
 
-/* Tarjeta de información (Home y About) */
-.infoCard {
-  background: #232342;
-  border: 1px solid #3a3a5c;
-  border-radius: 10px;
-  padding: 16px 18px;
-  margin-bottom: 16px;
-}
-
-.infoCard h2 {
-  font-size: 18px;
-  margin-bottom: 8px;
-  color: #b7b3ff;
-}
-
-.infoCard p,
-.infoCard li {
-  color: #e6e6f0;
-  line-height: 1.5;
-}
-
-.infoCard ul {
-  list-style: disc;
-  padding-left: 20px;
-}
-
 /* Contenedor de Home: centra imagen, título y botón; el texto de la
    tarjeta queda alineado a la izquierda para que se lea mejor */
 .homeView {
@@ -141,6 +115,32 @@ button {
   width: 85%;
   height: 85%;
   object-fit: contain;
+}
+
+/* Tarjeta de información (Home y About) */
+.infoCard {
+  background: #232342;
+  border: 1px solid #3a3a5c;
+  border-radius: 10px;
+  padding: 16px 18px;
+  margin-bottom: 16px;
+}
+
+.infoCard h2 {
+  font-size: 18px;
+  margin-bottom: 8px;
+  color: #b7b3ff;
+}
+
+.infoCard p,
+.infoCard li {
+  color: #e6e6f0;
+  line-height: 1.5;
+}
+
+.infoCard ul {
+  list-style: disc;
+  padding-left: 20px;
 }
 
 /* CHAT */
@@ -211,6 +211,40 @@ button {
   #app {
     max-width: 700px;
     margin: auto;
+  }
+
+  /* En pantallas más grandes, el contenido de Home/About se queda "pegado
+     arriba" dejando un espacio vacío abajo. Repartimos el espacio libre
+     de forma pareja ENTRE cada elemento (space-evenly), no solo arriba y
+     abajo como haría "center". En mobile lo dejamos como estaba: arriba,
+     con scroll normal. */
+  .homeView,
+  .aboutView {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-evenly;
+    min-height: calc(100vh - 110px);
+  }
+
+  .homeView .infoCard,
+  .aboutView .infoCard {
+    width: 100%;
+  }
+
+  /* El chat no se centra como Home/About (dejaría el cuadro de mensajes
+     flotando con espacio vacío arriba y abajo). En vez de eso, la caja de
+     mensajes CRECE para llenar el alto disponible, como en una app de
+     chat real. El input queda siempre pegado abajo. */
+  .chatView {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 110px);
+  }
+
+  .chatView .chat-box {
+    flex: 1;
+    height: auto; /* anula el alto fijo de 320px que usa mobile */
   }
 }
 
