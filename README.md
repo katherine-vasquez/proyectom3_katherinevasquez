@@ -1,4 +1,4 @@
-markdown# Spider-Man Chat 🕷️
+# Spider-Man Chat 🕷️
 
 Single Page Application que permite chatear con **Spider-Man (Peter Parker)** usando
 Google Gemini AI, con la API key protegida mediante una Vercel Serverless Function.
@@ -23,9 +23,9 @@ resuelva ejercicios de programación).
 
 | | Mobile | Tablet | Desktop |
 |---|---|---|---|
-| **Home** | ![Home mobile](./screenshots/home-mobile.png) | ![Home tablet](./screenshots/home-tablet.png) | ![Home desktop](./screenshots/home-desktop.png) |
-| **Chat** | ![Chat mobile](./screenshots/chat-mobile.png) | ![Chat tablet](./screenshots/chat-tablet.png) | ![Chat desktop](./screenshots/chat-desktop.png) |
-| **About** | ![About mobile](./screenshots/about-mobile.png) | ![About tablet](./screenshots/about-tablet.png) | ![About desktop](./screenshots/about-desktop.png) |
+| **Home** | <img src="./screenshots/home-mobile.png" width="180"/> | <img src="./screenshots/home-tablet.png" width="260"/> | <img src="./screenshots/home-desktop.png" width="260"/> |
+| **Chat** | <img src="./screenshots/chat-mobile.png" width="180"/> | <img src="./screenshots/chat-tablet.png" width="260"/> | <img src="./screenshots/chat-desktop.png" width="260"/> |
+| **About** | <img src="./screenshots/about-mobile.png" width="180"/> | <img src="./screenshots/about-tablet.png" width="260"/> | <img src="./screenshots/about-desktop.png" width="260"/> |
 
 ## Stack técnico
 
@@ -180,4 +180,6 @@ Se utilizó Claude (Anthropic) como asistente durante el desarrollo para:
 - Galería de selección de múltiples personajes.
 - Modo oscuro/claro con toggle.
 
-**Autor:** Katherine Vasquez
+---
+
+**Autor:** Katherine Vásquez
