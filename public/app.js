@@ -1,9 +1,19 @@
-import { resolveRoute, sendChatMessage, parseRetryDelaySeconds } from "./utils.js";
+import {
+  resolveRoute,
+  sendChatMessage,
+  parseRetryDelaySeconds,
+  saveHistory,
+  loadHistory,
+  clearHistory,
+  hasStoredHistory,
+} from "./utils.js";
 
 const app = document.getElementById("app");
 const navLinks = document.querySelectorAll("#navbar .navLink");
 
-let messages = [];
+// Al cargar la app, recuperamos el historial guardado (si existe) en vez
+// de empezar siempre desde cero. Extra credit: persistencia con localStorage.
+let messages = loadHistory();
 
 // -------------------- HOME --------------------
 function renderHome() {
@@ -79,6 +89,11 @@ function renderChat() {
     <div class="chatView">
       <h1>Chat con Spider-Man 🕷️</h1>
 
+      <div class="chat-header-row">
+        <span id="historyBadge" class="historyBadge">💾 Historial guardado</span>
+        <button id="clearHistoryBtn" class="clearBtn">Borrar historial</button>
+      </div>
+
       <div id="chatBox" class="chat-box"></div>
 
       <div class="chat-input-row">
@@ -92,6 +107,12 @@ function renderChat() {
 
   const input = document.getElementById("inputMessage");
   document.getElementById("sendBtn").addEventListener("click", sendMessage);
+
+  document.getElementById("clearHistoryBtn").addEventListener("click", () => {
+    messages = [];
+    clearHistory();
+    renderMessages();
+  });
 
   input.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
@@ -123,7 +144,24 @@ function renderMessages() {
     )
     .join("");
 
-  chatBox.scrollTop = chatBox.scrollHeight;
+    chatBox.scrollTop = chatBox.scrollHeight;
+
+  // Extra credit: guardamos el historial solo si hay mensajes de verdad.
+  // Si está vacío (recién borrado, o nunca hubo conversación), lo borramos
+  // de localStorage en vez de guardar un arreglo vacío — si no, el badge
+  // "Historial guardado" se quedaría encendido después de borrar.
+  if (messages.length > 0) {
+    saveHistory(messages);
+  } else {
+    clearHistory();
+  }
+  updateHistoryBadge();
+}
+
+function updateHistoryBadge() {
+  const badge = document.getElementById("historyBadge");
+  if (!badge) return;
+  badge.classList.toggle("visible", hasStoredHistory());
 }
 
 // -------------------- SEND MESSAGE --------------------

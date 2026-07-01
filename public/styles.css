@@ -176,6 +176,39 @@ button {
   color: #e6e6f0;
 }
 
+/* Fila de arriba del chat: indicador de historial guardado + botón borrar */
+.chat-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  min-height: 28px;
+}
+
+.historyBadge {
+  font-size: 13px;
+  color: #9d9dc7;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.historyBadge.visible {
+  opacity: 1;
+}
+
+.clearBtn {
+  padding: 6px 12px;
+  margin-top: 0;
+  font-size: 13px;
+  background: transparent;
+  border: 1px solid #4f46e5;
+  color: #b7b3ff;
+}
+
+.clearBtn:hover {
+  background: #2a2a5c;
+}
+
 .chat-input-row {
   display: flex;
   gap: 8px;
@@ -214,10 +247,9 @@ button {
   }
 
   /* En pantallas más grandes, el contenido de Home/About se queda "pegado
-     arriba" dejando un espacio vacío abajo. Repartimos el espacio libre
-     de forma pareja ENTRE cada elemento (space-evenly), no solo arriba y
-     abajo como haría "center". En mobile lo dejamos como estaba: arriba,
-     con scroll normal. */
+     arriba" dejando un espacio vacío abajo. Lo centramos verticalmente en
+     el alto disponible de la pantalla (restando aprox. lo que ocupa la
+     navbar). En mobile lo dejamos como estaba: arriba, con scroll normal. */
   .homeView,
   .aboutView {
     display: flex;
