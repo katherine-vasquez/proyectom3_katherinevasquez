@@ -8,6 +8,7 @@ import {
   loadHistory,
   clearHistory,
   hasStoredHistory,
+  formatTimestamp,
 } from "../public/utils.js";
 
 describe("Utils del Chat", () => {
@@ -98,5 +99,17 @@ describe("Persistencia del historial (localStorage)", () => {
 
     expect(hasStoredHistory()).toBe(false);
     expect(loadHistory()).toEqual([]);
+  });
+});
+
+describe("formatTimestamp", () => {
+  it("devuelve la hora en formato corto (HH:MM)", () => {
+    const result = formatTimestamp(new Date("2026-01-01T15:30:00"));
+    expect(result).toMatch(/\d{1,2}:\d{2}/);
+  });
+
+  it("acepta un número (Date.now()) además de un objeto Date", () => {
+    const result = formatTimestamp(Date.now());
+    expect(result).toMatch(/\d{1,2}:\d{2}/);
   });
 });

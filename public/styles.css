@@ -176,6 +176,68 @@ button {
   color: #e6e6f0;
 }
 
+/* Hora debajo de cada mensaje */
+.msgTime {
+  display: block;
+  font-size: 11px;
+  color: #9d9dc7;
+  margin-top: 4px;
+}
+
+/* Botón "copiar" en las respuestas de Spider-Man */
+.copyBtn {
+  margin-top: 0;
+  margin-left: 6px;
+  padding: 0 4px;
+  font-size: 12px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #b7b3ff;
+  vertical-align: middle;
+}
+
+.copyBtn:hover {
+  color: white;
+}
+
+/* Puntitos animados del indicador "escribiendo..." */
+.typingDots {
+  display: inline-flex;
+  gap: 4px;
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+.typingDots span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #b7b3ff;
+  animation: typingBounce 1.2s infinite ease-in-out;
+}
+
+.typingDots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typingDots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+@keyframes typingBounce {
+  0%,
+  80%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.4;
+  }
+  40% {
+    transform: translateY(-4px);
+    opacity: 1;
+  }
+}
+
 /* Fila de arriba del chat: indicador de historial guardado + botón borrar */
 .chat-header-row {
   display: flex;

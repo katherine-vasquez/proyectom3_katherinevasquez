@@ -6,6 +6,7 @@ import {
   loadHistory,
   clearHistory,
   hasStoredHistory,
+  formatTimestamp,
 } from "./utils.js";
 
 const app = document.getElementById("app");
@@ -114,6 +115,26 @@ function renderChat() {
     renderMessages();
   });
 
+  // Botón "copiar" de cada respuesta de Spider-Man: un solo listener para
+  // toda la caja de mensajes (delegación de eventos), porque el HTML de
+  // adentro se reconstruye por completo en cada renderMessages().
+  document.getElementById("chatBox").addEventListener("click", (event) => {
+    const button = event.target.closest(".copyBtn");
+    if (!button) return;
+
+    const index = Number(button.dataset.index);
+    const text = messages[index]?.text;
+    if (!text) return;
+
+    navigator.clipboard.writeText(text).then(() => {
+      const original = button.textContent;
+      button.textContent = "✅";
+      setTimeout(() => {
+        button.textContent = original;
+      }, 1200);
+    });
+  });
+
   input.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
       sendMessage();
@@ -135,23 +156,41 @@ function renderMessages() {
   if (!chatBox) return;
 
   chatBox.innerHTML = messages
-    .map(
-      (msg) => `
-      <p class="msg msg-${msg.role === "Usuario" ? "user" : "bot"}">
-        <b>${msg.role}:</b> ${msg.text}
-      </p>
-    `
-    )
+    .map((msg, index) => {
+      // Indicador "escribiendo..." con puntitos animados (CSS), en vez
+      // de texto estático.
+      if (msg.isTyping) {
+        return `
+          <p class="msg msg-bot msg-typing">
+            <b>Spider-Man:</b>
+            <span class="typingDots"><span></span><span></span><span></span></span>
+          </p>
+        `;
+      }
+
+      const isUser = msg.role === "Usuario";
+      const timeLabel = msg.time ? formatTimestamp(msg.time) : "";
+      const showCopyBtn = !isUser && !msg.isCountdown;
+
+      return `
+        <p class="msg msg-${isUser ? "user" : "bot"}">
+          <b>${msg.role}:</b> ${msg.text}
+          ${timeLabel ? `<span class="msgTime">${timeLabel}</span>` : ""}
+          ${showCopyBtn ? `<button class="copyBtn" data-index="${index}" title="Copiar respuesta">📋</button>` : ""}
+        </p>
+      `;
+    })
     .join("");
 
-    chatBox.scrollTop = chatBox.scrollHeight;
+  chatBox.scrollTop = chatBox.scrollHeight;
 
-  // Extra credit: guardamos el historial solo si hay mensajes de verdad.
-  // Si está vacío (recién borrado, o nunca hubo conversación), lo borramos
-  // de localStorage en vez de guardar un arreglo vacío — si no, el badge
-  // "Historial guardado" se quedaría encendido después de borrar.
-  if (messages.length > 0) {
-    saveHistory(messages);
+  // Extra credit: persistimos solo los mensajes "reales" (ni el indicador
+  // de "escribiendo..." ni los del contador de 429 tienen sentido guardados
+  // para la próxima vez que se abra el chat).
+  const persistable = messages.filter((m) => !m.isTyping && !m.isCountdown);
+
+  if (persistable.length > 0) {
+    saveHistory(persistable);
   } else {
     clearHistory();
   }
@@ -176,7 +215,7 @@ async function sendMessage() {
   // para mandárselo a Gemini y que mantenga contexto.
   const historyForAPI = [...messages];
 
-  messages.push({ role: "Usuario", text });
+  messages.push({ role: "Usuario", text, time: Date.now() });
   renderMessages();
   input.value = "";
 
@@ -186,18 +225,18 @@ async function sendMessage() {
   input.disabled = true;
   sendBtn.disabled = true;
 
-  messages.push({ role: "Spider-Man", text: "🕷️ escribiendo..." });
+  messages.push({ role: "Spider-Man", isTyping: true });
   renderMessages();
 
   try {
     const reply = await sendChatMessage(text, historyForAPI);
-    messages.pop(); // quita "escribiendo..."
-    messages.push({ role: "Spider-Man", text: reply });
+    messages.pop(); // quita el indicador de "escribiendo..."
+    messages.push({ role: "Spider-Man", text: reply, time: Date.now() });
     renderMessages();
     unlockChatInput();
   } catch (error) {
     console.error("Error al hablar con Spider-Man:", error);
-    messages.pop(); // quita "escribiendo..."
+    messages.pop(); // quita el indicador de "escribiendo..."
 
     if (error.status === 429) {
       // Caso específico: límite de peticiones excedido. Mostramos un
@@ -205,7 +244,11 @@ async function sendMessage() {
       const seconds = parseRetryDelaySeconds(error.retryDelay);
       runRateLimitCountdown(seconds);
     } else {
-      messages.push({ role: "Spider-Man", text: "Error conectando con Spider-Man 😢" });
+      messages.push({
+        role: "Spider-Man",
+        text: "Error conectando con Spider-Man 😢",
+        time: Date.now(),
+      });
       renderMessages();
       unlockChatInput();
     }
